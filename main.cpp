@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  Machine
+//  states
 //
 //  Created by Daniel Pav on 4/27/20.
 //  Copyright © 2020 Daniel Pav. All rights reserved.
@@ -137,9 +137,9 @@ int main(int argc, const char* argv[])
 {
     testPass1("32");
     testPass1("101.57");
-    testPass1("32,000");
+    testPass1("32,000"); // SHOULD BE ERROR
     testPass2("32");
     testPass2("101.57");
-    testPass2("32,000");
+    testPass2("32,000"); // SHOULD BE ERROR
     return 0;
 }
