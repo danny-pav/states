@@ -20,8 +20,8 @@ template<typename... Ts>
 struct TypeNum
 {
 private:
-    static const size_t INVALID{0};
-    static const size_t FIRST{1};
+    static const size_t INVALID{(size_t) -1};
+    static const size_t FIRST{0};
 
 private:
     template<size_t n, typename T, typename TFirst, typename... TOthers>
