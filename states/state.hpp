@@ -7,24 +7,31 @@
 //
 #pragma once
 
-#include "typenum.hpp"
 #include "noop.hpp"
+#include "typenum.hpp"
 
 namespace states
 {
+/* */
 template<typename TName, typename TStateOp = NoOp>
 class State
 {
 public:
+    /* */
     typedef State<TName, TStateOp> TThisType;
 
 public:
+    /* */
     static const char* name() { return typeid(TName).name(); }
+
+    /* */
     template<typename TData>
     static void invoke(TData& data)
     {
         TStateOp()(data);
     }
+
+    /* */
     template<typename TData, typename... Ts>
     static void become(TypeNum<Ts...>& state, TData& data)
     {

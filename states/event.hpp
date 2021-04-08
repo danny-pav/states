@@ -12,10 +12,12 @@
 
 namespace states
 {
+/* */
 template<typename TName>
 class Event
 {
 public:
+    /* */
     static const char* name() { return typeid(TName).name(); }
 };
 } // namespace states

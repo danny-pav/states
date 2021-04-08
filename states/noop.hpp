@@ -10,8 +10,10 @@
 
 namespace states
 {
+/* */
 struct NoOp
 {
+    /* */
     template<typename T>
     void operator()(T&)
     {

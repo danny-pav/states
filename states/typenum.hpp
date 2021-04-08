@@ -16,52 +16,54 @@
 
 namespace states
 {
-template<typename... Ts>
+/*
+ The number of a type given as a template parameter.  The list of template parameters can contain
+ duplicates. This has POD semantics.  It is initialized to be INVALID.  Set the value by calling
+ clear (sets value to INVALID as if newly constructed) or calling set<TYPE>.   Check the value
+ by calling is<TYPE> and calling valid.
+ */
+template<typename TList>
 struct TypeNum
 {
 private:
-    static const size_t INVALID{(size_t) -1};
-    static const size_t FIRST{0};
-
-private:
-    template<size_t n, typename T, typename TFirst, typename... TOthers>
-    size_t getImpl(TypeList<TFirst, TOthers...>) const
-    {
-        return std::is_same<T, TFirst>::value ? n : getImpl<n + 1, T>(TypeList<TOthers...>{});
-    }
-    template<size_t n, typename T>
-    size_t getImpl(TypeList<>) const
-    {
-        return INVALID;
-    }
+    static const size_t npos = TypeListIndexBase::npos;
 
 public:
+    /* returns TRUE if the value corresponds to the type T of the Ts template parameter
+     code will not compile if T is not in Ts */
     template<typename T>
     bool is() const
     {
-        return index_ == getImpl<FIRST, T>(TypeList<Ts...>{});
+        return index_ == TypeListIndex<TList, T>::index;
     }
-    bool valid() const { return (index_ != INVALID); }
+    /* returns TRUE if the value is not INVALID, the type can be found in the class's Ts template parameter */
+    bool valid() const { return (index_ != npos); }
 
 public:
-    void clear() { index_ = INVALID; }
+    /* sets the value to INVALID */
+    void clear() { index_ = npos; }
+    /* sets the value to the index of type T of the Ts template parameter code will not compile
+     if T is not in Ts */
     template<typename T>
     void set()
     {
-        index_ = getImpl<FIRST, T>(TypeList<Ts...>{});
+        index_ = TypeListIndex<TList, T>::index;
     }
 
 public:
+    /* dumps the internal state (for debugging) */
     void dump(std::ostream& os) const { os << index_; }
 
 private:
-    size_t index_{INVALID};
+    size_t index_{npos};
 };
 
-template<typename... Ts>
-std::ostream& operator<<(std::ostream& os, const TypeNum<Ts...>& obj)
+/* dumps the internal state (for debugging) */
+template<typename TList>
+std::ostream& operator<<(std::ostream& os, const TypeNum<TList>& obj)
 {
     obj.dump(os);
     return os;
 }
+
 } // namespace states
