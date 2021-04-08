@@ -9,15 +9,19 @@
 #pragma once
 
 #include <typeinfo>
+#include "named.hpp"
 
 namespace states
 {
 /* */
-template<typename TName>
+template<const char * Name>
 class Event
 {
+private:
+    typedef Named<Name> TNameImpl;
+    
 public:
     /* */
-    static const char* name() { return typeid(TName).name(); }
+    static const char* name() { return TNameImpl::name(); }
 };
 } // namespace states
