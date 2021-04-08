@@ -8,33 +8,42 @@
 
 #pragma once
 
+#include "noop.hpp"
 #include "state.hpp"
 #include "typenum.hpp"
-#include "noop.hpp"
 
 namespace states
 {
+/* */
 template<typename TFrom, typename TEvent, typename TTo, typename TLinkOp = NoOp>
 class Link
 {
 public:
+    /* */
     typedef TFrom TFromType;
+    /* */
     typedef TEvent TEventType;
+    /* */
     typedef TTo TToType;
 
 public:
-    template<typename... Ts>
-    static bool relevant(const TypeNum<Ts...>& state)
+    /* */
+    template<typename TStateNum>
+    static bool relevant(const TStateNum& state)
     {
         return state.template is<TFrom>();
     }
-    template<typename TTestEvent, typename... Ts>
-    static bool relevant(const TypeNum<Ts...>& state)
+
+    /* */
+    template<typename TTestEvent, typename TStateNum>
+    static bool relevant(const TStateNum& state)
     {
         return std::is_same<TEvent, TTestEvent>::value && relevant(state);
     }
-    template<typename TData, typename... Ts>
-    static void follow(TypeNum<Ts...>& state, TData& data)
+
+    /* */
+    template<typename TData, typename TStateNum>
+    static void follow(TStateNum& state, TData& data)
     {
         TLinkOp()(data);
         TTo::become(state, data);
