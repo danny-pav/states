@@ -16,15 +16,15 @@
 
 #include <iostream>
 
-class sStart;
-class sDigit1;
-class sDecimal;
-class sDigit2;
-class sEnd;
+constexpr char sStart[] = "Start";
+constexpr char sDigit1[] = "Digit1";
+constexpr char sDecimal[] = "Decimal";
+constexpr char sDigit2[] = "Digit2";
+constexpr char sEnd[] = "End";
 
-class eDigit;
-class eDot;
-class eDone;
+constexpr char eDigit[] = "Digit";
+constexpr char eDot[] = "Dot";
+constexpr char eDone[] = "Done";
 
 struct Data
 {

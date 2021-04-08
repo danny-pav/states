@@ -9,20 +9,22 @@
 
 #include "noop.hpp"
 #include "typenum.hpp"
+#include "named.hpp"
 
 namespace states
 {
-/* */
-template<typename TName, typename TStateOp = NoOp>
+template<const char * TName, typename TStateOp = NoOp>
 class State
 {
-public:
+private:
     /* */
     typedef State<TName, TStateOp> TThisType;
-
+    /* */
+    typedef Named<TName> TNameImpl;
+    
 public:
     /* */
-    static const char* name() { return typeid(TName).name(); }
+    static const char* name() { return TNameImpl::name(); }
 
     /* */
     template<typename TData>
