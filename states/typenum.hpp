@@ -1,6 +1,6 @@
 //
 //  typenum.hpp
-//  machine
+//  states
 //
 //  Created by Daniel Pav on 4/1/21.
 //  Copyright © 2021 Daniel Pav. All rights reserved.
@@ -32,7 +32,7 @@ public:
     /* returns TRUE if the value corresponds to the type T of the Ts template parameter
      code will not compile if T is not in Ts */
     template<typename T>
-    bool is() const
+    typename std::enable_if<TypeListIndex<TList, T>::index != TypeListIndexBase::npos, bool>::type is() const
     {
         return index_ == TypeListIndex<TList, T>::index;
     }
@@ -45,7 +45,7 @@ public:
     /* sets the value to the index of type T of the Ts template parameter code will not compile
      if T is not in Ts */
     template<typename T>
-    void set()
+    typename std::enable_if<TypeListIndex<TList, T>::index != TypeListIndexBase::npos, void>::type set()
     {
         index_ = TypeListIndex<TList, T>::index;
     }
