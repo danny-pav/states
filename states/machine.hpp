@@ -25,6 +25,16 @@ public:
     typedef TypeListUnique<typename TLinks::TEventType...> TEventTypes;
     /* */
     typedef TypeNum<TEventTypes> TEventNum;
+    /* */
+    
+private:
+    /* */
+    typedef TypeList<typename TLinks::TKeyType...> TKeyTypes;
+    /* */
+    typedef TypeListUnique<typename TLinks::TKeyType...> TUniqueKeyTypes;
+    /* */
+    static_assert(TypeListSize<TKeyTypes>::size == TypeListSize<TUniqueKeyTypes>::size,
+                  "set of links must have unique set of from/event pairs.");
 
 private:
     /* */

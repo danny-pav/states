@@ -14,6 +14,11 @@
 
 namespace states
 {
+template<typename TFrom, typename TEvent>
+struct LinkKey
+{
+};
+
 /* */
 template<typename TFrom, typename TEvent, typename TTo, typename TLinkOp = NoOp>
 class Link
@@ -25,6 +30,8 @@ public:
     typedef TEvent TEventType;
     /* */
     typedef TTo TToType;
+    /* */
+    typedef LinkKey<TFrom, TEvent> TKeyType;
 
 public:
     /* */
