@@ -1,0 +1,12 @@
+---
+BasedOnStyle: Microsoft
+AccessModifierOffset: '-4'
+AllowAllConstructorInitializersOnNextLine: 'false'
+AllowShortFunctionsOnASingleLine: Inline
+AlwaysBreakTemplateDeclarations: 'Yes'
+BreakConstructorInitializers: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+PointerAlignment: Left
+SpaceAfterCStyleCast: 'true'
+SpaceAfterTemplateKeyword: 'false'
+...
