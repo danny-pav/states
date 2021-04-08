@@ -1,6 +1,6 @@
 //
 //  machine.hpp
-//  machine
+//  states
 //
 //  Created by Daniel Pav on 4/2/21.
 //  Copyright © 2021 Daniel Pav. All rights reserved.
@@ -86,8 +86,8 @@ private:
     }
 
 public:
-    /* handle an event, will change the state, following the appropriate link, performing the link op and the new state op
-        returns true if handled */
+    /* handle an event, will change the state, following the appropriate link, performing the link op and the new state
+       op returns true if handled */
     template<typename TEvent, typename TData>
     static bool handle(TStateNum& state, TData& data)
     {

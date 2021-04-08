@@ -2,7 +2,7 @@
 BasedOnStyle: Microsoft
 AccessModifierOffset: '-4'
 AllowAllConstructorInitializersOnNextLine: 'false'
-AllowShortFunctionsOnASingleLine: Inline
+AllowShortFunctionsOnASingleLine: All
 AlwaysBreakTemplateDeclarations: 'Yes'
 BreakConstructorInitializers: AfterColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
