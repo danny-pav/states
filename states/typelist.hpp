@@ -79,6 +79,17 @@ struct TypeListIndex
 //
 
 template<typename TList, typename T>
+struct TypeListContains
+{
+    using TImpl = TypeListIndex<TList, T>;
+    static const constexpr bool value = (TImpl::index != TImpl::npos);
+};
+
+//
+//
+//
+
+template<typename TList, typename T>
 struct TypeListAdd
 {
     using TCurrentType = T;
@@ -92,7 +103,7 @@ struct TypeListAdd
 template<typename TList, typename T>
 struct TypeListAddUnique
 {
-    using TImpl = typename std::conditional<TypeListIndex<TList, T>::index == TypeListIndexBase::npos,
+    using TImpl = typename std::conditional<!TypeListContains<TList, T>::value,
                                             TypeListAdd<TList, T>, TList>::type;
     using TCurrentType = typename TImpl::TCurrentType;
     using TNextType = typename TImpl::TNextType;
@@ -115,6 +126,22 @@ struct TypeListUnique<T>
 {
     using TCurrentType = T;
     using TNextType = TypeListEnd;
+};
+
+//
+//
+//
+
+template<typename TList>
+struct TypeListSize
+{
+    static constexpr const size_t size = 1 + TypeListSize<typename TList::TNextType>::size;
+};
+
+template<>
+struct TypeListSize<TypeListEnd>
+{
+    static constexpr const size_t size = 0;
 };
 
 } // namespace states
