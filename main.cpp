@@ -100,14 +100,14 @@ void testPass1(const std::string& s)
     std::cout << "in:" << s << std::endl;
     Data d{s};
     Parser p(d);
-    bool ok = p.start();
-    while (ok && !p.done())
+    p.start();
+    while (!p.done())
     {
-        ok = processEvent(p, d);
-    }
-    if (!ok)
-    {
-        std::cout << "ERROR" << std::endl;
+        if (!processEvent(p, d))
+        {
+            std::cout << "ERROR" << std::endl;
+            break;
+        }
     }
     std::cout << "out:" << d.out_ << std::endl;
     std::cout << "<<<<" << std::endl;
@@ -119,15 +119,15 @@ void testPass2(const std::string& s)
     std::cout << "in:" << s << std::endl;
     Data d{s};
     Parser p(d);
-    bool ok = p.start();
-    while (ok && !p.done())
+    p.start();
+    while (!p.done())
     {
         Parser::TEventNum ev = processEvent(d);
-        ok = p.next(ev);
-    }
-    if (!ok)
-    {
-        std::cout << "ERROR" << std::endl;
+        if (!p.next(ev))
+        {
+            std::cout << "ERROR" << std::endl;
+            break;
+        }
     }
     std::cout << "out:" << d.out_ << std::endl;
     std::cout << "<<<<" << std::endl;
