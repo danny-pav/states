@@ -6,25 +6,25 @@
 //  Copyright © 2020 Daniel Pav. All rights reserved.
 //
 
-#include "typenum.hpp"
-#include "link.hpp"
-#include "state.hpp"
-#include "noop.hpp"
 #include "event.hpp"
+#include "link.hpp"
 #include "machine.hpp"
+#include "noop.hpp"
 #include "process.hpp"
+#include "state.hpp"
+#include "typenum.hpp"
 
 #include <iostream>
 
-constexpr char sStart[] = "Start";
-constexpr char sDigit1[] = "Digit1";
-constexpr char sDecimal[] = "Decimal";
-constexpr char sDigit2[] = "Digit2";
-constexpr char sEnd[] = "End";
+static const char sStart[] = "Start";
+static const char sDigit1[] = "Digit1";
+static const char sDecimal[] = "Decimal";
+static const char sDigit2[] = "Digit2";
+static const char sEnd[] = "End";
 
-constexpr char eDigit[] = "Digit";
-constexpr char eDot[] = "Dot";
-constexpr char eDone[] = "Done";
+static const char eDigit[] = "Digit";
+static const char eDot[] = "Dot";
+static const char eDone[] = "Done";
 
 struct Data
 {
