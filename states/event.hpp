@@ -13,15 +13,16 @@
 
 namespace states
 {
-/* */
+/* and event is based on a name to distinguish it */
 template<const char* Name>
 class Event
 {
 private:
+    /* the implementation of the name */
     typedef Named<Name> TNameImpl;
 
 public:
-    /* */
+    /* returns the name */
     static const char* name() { return TNameImpl::name(); }
 };
 } // namespace states

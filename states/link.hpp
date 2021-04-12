@@ -14,6 +14,7 @@
 
 namespace states
 {
+/* */
 template<typename TFrom, typename TEvent>
 struct LinkKey
 {
@@ -34,21 +35,22 @@ public:
     typedef LinkKey<TFrom, TEvent> TKeyType;
 
 public:
-    /* */
+    /* returns true if this link is relevant to this state, by which the state is the starting state for the link */
     template<typename TStateNum>
     static bool relevant(const TStateNum& state)
     {
         return state.template is<TFrom>();
     }
 
-    /* */
+    /* returns true if the link is relevant to the state and the event */
     template<typename TTestEvent, typename TStateNum>
     static bool relevant(const TStateNum& state)
     {
         return std::is_same<TEvent, TTestEvent>::value && relevant(state);
     }
 
-    /* */
+    /* follow the link, by running the link operation on the data and the state operation on the data, changing the
+     state to the new state */
     template<typename TData, typename TStateNum>
     static void follow(TStateNum& state, TData& data)
     {

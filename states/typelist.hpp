@@ -13,14 +13,22 @@
 
 namespace states
 {
+
+//
+// TypeListEnd
+//
+
+/* placeholder type to signify the end of a typelist.  equivalent to a (char) 0 being used to
+ signify the end of a c-style string */
 struct TypeListEnd
 {
 };
 
 //
-//
+// TypeList
 //
 
+/* recurisve definitions of a typelist ending in a TypeListEnd */
 template<typename T, typename... Ts>
 struct TypeList
 {
@@ -36,18 +44,20 @@ struct TypeList<T>
 };
 
 //
-//
+// TypeListIndexBase
 //
 
+/* type to act as base to hold npos as the no position constant */
 struct TypeListIndexBase
 {
     static const constexpr size_t npos = (size_t) -1;
 };
 
 //
-//
+// TypeListIndex
 //
 
+/* recursive definition of TypeListIndex returning the 0-based index of the type T in the type list TLIST */
 template<typename TList, typename T>
 struct TypeListIndex;
 
@@ -75,9 +85,10 @@ struct TypeListIndex
 };
 
 //
-//
+// TypeListContains
 //
 
+/* uses TypeListIndex to indicate if the type T is in the type list TList */
 template<typename TList, typename T>
 struct TypeListContains
 {
@@ -86,9 +97,10 @@ struct TypeListContains
 };
 
 //
-//
+// TypeListAdd
 //
 
+/* constructs a typelist by adding a type T to a type list TList */
 template<typename TList, typename T>
 struct TypeListAdd
 {
@@ -97,22 +109,23 @@ struct TypeListAdd
 };
 
 //
-//
+// TypeListAddUnique
 //
 
+/* adds the type T to the type list TList if the type T is not already in the type list T */
 template<typename TList, typename T>
 struct TypeListAddUnique
 {
-    using TImpl = typename std::conditional<!TypeListContains<TList, T>::value,
-                                            TypeListAdd<TList, T>, TList>::type;
+    using TImpl = typename std::conditional<!TypeListContains<TList, T>::value, TypeListAdd<TList, T>, TList>::type;
     using TCurrentType = typename TImpl::TCurrentType;
     using TNextType = typename TImpl::TNextType;
 };
 
 //
-//
+// TypeListUnique
 //
 
+/* creates a typelist in which each type only appears at most once */
 template<typename T, typename... Ts>
 struct TypeListUnique
 {
@@ -129,9 +142,10 @@ struct TypeListUnique<T>
 };
 
 //
-//
+// TypeListSize
 //
 
+/* computes the size of a type list TList */
 template<typename TList>
 struct TypeListSize
 {

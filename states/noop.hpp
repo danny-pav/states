@@ -10,10 +10,10 @@
 
 namespace states
 {
-/* */
+/* provides a default to do nothing as an action */
 struct NoOp
 {
-    /* */
+    /* does nothing */
     template<typename T>
     void operator()(T&)
     {
