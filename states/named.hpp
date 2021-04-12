@@ -10,11 +10,12 @@
 
 namespace states
 {
+/* converts a const char * template parameter into a const char * name function */
 template<const char* Name>
 class Named
 {
 public:
-    /* */
+    /* returns the name that is the template parameter */
     static const char* name() { return Name; }
 };
 } // namespace states

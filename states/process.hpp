@@ -15,9 +15,10 @@ template<typename TMachine, typename TBegin, typename TEnd, typename TData>
 class Process
 {
 public:
-    /* */
+    /* creates a process setting the internal state to invalid (equivalent to reset) and storing a reference to the data
+     */
     Process(TData& data) : state_(), data_(data) {}
-    /* */
+    /* destroys the process */
     ~Process() = default;
 
 private:
@@ -27,9 +28,9 @@ private:
     Process& operator=(Process&&) = delete;
 
 public:
-    /* */
+    /* the state num type using the states form the machine given */
     typedef typename TMachine::TStateNum TStateNum;
-    /* */
+    /* the event num type using the events from the machine given */
     typedef typename TMachine::TEventNum TEventNum;
 
 public:

@@ -20,12 +20,13 @@ namespace states
  The number of a type given as a template parameter.  The list of template parameters can contain
  duplicates. This has POD semantics.  It is initialized to be INVALID.  Set the value by calling
  clear (sets value to INVALID as if newly constructed) or calling set<TYPE>.   Check the value
- by calling is<TYPE> and calling valid.
- */
+ by calling is<TYPE> and calling valid. The functions is and set may only be called with T
+ parameters that are in the type list TList.  This will fail to compile if not. */
 template<typename TList>
 struct TypeNum
 {
 private:
+    /* to inidicate "no type" */
     static const size_t npos = TypeListIndexBase::npos;
 
 public:
@@ -55,6 +56,7 @@ public:
     void dump(std::ostream& os) const { os << index_; }
 
 private:
+    /* index indicating the type, with npos as "no type" */
     size_t index_{npos};
 };
 
