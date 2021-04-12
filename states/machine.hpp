@@ -17,6 +17,10 @@ template<typename... TLinks>
 class Machine
 {
 public:
+    /* list of unique states that are start states */
+    typedef TypeListUnique<typename TLinks::TFromType...> TFromStateTypes;
+    /* list of unique states that are end states */
+    typedef TypeListUnique<typename TLinks::TToType...> TToStateTypes;
     /* list of unique states that are start or end states */
     typedef TypeListUnique<typename TLinks::TFromType..., typename TLinks::TToType...> TStateTypes;
     /* typenum representing a state from the list of unique states */
@@ -98,7 +102,8 @@ public:
     /* handle an event, will change the state, following the appropriate link, performing the link op and the new state
        op returns true if handled */
     template<typename TEvent, typename TData>
-    static bool handle(TStateNum& state, TData& data)
+    static typename std::enable_if<TypeListContains<TEventTypes, TEvent>::value, bool>::type handle(TStateNum& state,
+                                                                                                    TData& data)
     {
         return handleImpl<TEvent, TData, TLinks...>(state, data);
     }

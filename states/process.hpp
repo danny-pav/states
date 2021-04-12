@@ -32,6 +32,10 @@ public:
     typedef typename TMachine::TStateNum TStateNum;
     /* the event num type using the events from the machine given */
     typedef typename TMachine::TEventNum TEventNum;
+    /* asserts that the begin state is in the from states */
+    static_assert(TypeListContains<typename TMachine::TFromStateTypes, TBegin>::value, "");
+    /* asserts that the end state is in the to states */
+    static_assert(TypeListContains<typename TMachine::TToStateTypes, TEnd>::value, "");
 
 public:
     /* sets the process to no-state, equivalent to newly constructed */
