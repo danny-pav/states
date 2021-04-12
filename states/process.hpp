@@ -41,14 +41,11 @@ public:
     /* sets the process to no-state, equivalent to newly constructed */
     void reset() { state_.clear(); }
 
-    /* sets the state to the TBegin state, returns true if state is in the link set as a from state */
-    bool start()
+    /* sets the state to the TBegin state */
+    void start()
     {
         state_.template set<TBegin>();
-        if (TMachine::process(state_, data_))
-            return true;
-        reset();
-        return false;
+        TMachine::process(state_, data_);
     }
 
     /* processes the event given, calling the link op, then the state op, returns true if link exists */
