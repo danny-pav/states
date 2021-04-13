@@ -12,7 +12,12 @@
 
 namespace states
 {
-/* */
+/* A set of links and the operations that can be performed on them and the types associated with them:
+ 1. a state num which can be any of the from or to states
+ 2. an event num which can be any of the event states
+ 3. handle an event which finds the link that has the same from state and the same event and follows it
+ 4. process a state which means to run the state's operation 
+ */
 template<typename... TLinks>
 class Machine
 {
@@ -31,16 +36,16 @@ public:
     typedef TypeNum<TEventTypes> TEventNum;
 
 private:
-    /* */
+    /* non-unique list of key types */
     typedef TypeList<typename TLinks::TKeyType...> TKeyTypes;
-    /* */
+    /* unique list of key types */
     typedef TypeListUnique<typename TLinks::TKeyType...> TUniqueKeyTypes;
     /* asserts that the list of links does not have any duplicate start, event pairs */
     static_assert(TypeListSize<TKeyTypes>::size == TypeListSize<TUniqueKeyTypes>::size,
                   "set of links must have unique set of from/event pairs.");
 
 private:
-    /* */
+    /* link case for handle by event type, if relevant, follow link, else try others */
     template<typename TEvent, typename TData, typename TFirst, typename... TOthers>
     static bool handleImpl(TStateNum& state, TData& data)
     {
@@ -52,14 +57,14 @@ private:
         return handleImpl<TEvent, TData, TOthers...>(state, data);
     }
 
-    /* */
+    /* base case for handle by event type, do nothing */
     template<typename TEvent, typename TData>
     static bool handleImpl(TStateNum& state, TData& data)
     {
         return false;
     }
 
-    /* */
+    /* link case for handle by event num, if relevant, follow link, else try others */
     template<typename TData, typename TFirst, typename... TOthers>
     static bool handleImpl(TStateNum& state, const TEventNum& event, TData& data)
     {
@@ -72,14 +77,14 @@ private:
         return handleImpl<TData, TOthers...>(state, event, data);
     }
 
-    /* */
+    /* base case for handle by event num, do nothing */
     template<typename TData>
     static bool handleImpl(TStateNum& state, const TEventNum& event, TData& data)
     {
         return false;
     }
 
-    /* */
+    /* link case for process, if the link is relevant, process else try the other links */
     template<typename TData, typename TFirst, typename... TOthers>
     static bool processImpl(const TStateNum& state, TData& data)
     {
@@ -91,7 +96,7 @@ private:
         return processImpl<TData, TOthers...>(state, data);
     }
 
-    /* */
+    /* base case for process, do nothing */
     template<typename TData>
     static bool processImpl(const TStateNum& state, TData& data)
     {
