@@ -14,24 +14,26 @@
 
 namespace states
 {
-/* */
+/* structure with the from state and event.  represents the unique key of links in a machine */
 template<typename TFrom, typename TEvent>
 struct LinkKey
 {
 };
 
-/* */
+/* represents a transition in a state diagram.  indicates a link from TFrom to TTo when TEvent occurs.  When this is
+ * traverse the TLinkOp is invoked.
+ */
 template<typename TFrom, typename TEvent, typename TTo, typename TLinkOp = NoOp>
 class Link
 {
 public:
-    /* */
+    /* from type */
     typedef TFrom TFromType;
-    /* */
+    /* event type */
     typedef TEvent TEventType;
-    /* */
+    /* to type */
     typedef TTo TToType;
-    /* */
+    /* key is From, Event pair */
     typedef LinkKey<TFrom, TEvent> TKeyType;
 
 public:
