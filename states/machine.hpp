@@ -22,6 +22,8 @@ template<typename... TLinks>
 class Machine
 {
 public:
+    /* list of links */
+    typedef TypeList<TLinks...> TLinkList;
     /* list of unique states that are start states */
     typedef TypeListUnique<typename TLinks::TFromType...> TFromStateTypes;
     /* list of unique states that are end states */
