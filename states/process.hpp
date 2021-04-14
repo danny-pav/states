@@ -8,10 +8,77 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "typelist.hpp"
 
 namespace states
 {
+/* forward declare */
+template<typename TMachine, typename TBegin, typename TEnd>
+struct Reachable;
+
+/* dteremines if the link goes from begin to end.  if so, value is true */
+template<typename TBegin, typename TEnd, typename TLink>
+struct Match
+{
+    using TSameBegin = std::is_same<TBegin, typename TLink::TFromType>;
+    using TSameEnd = std::is_same<TEnd, typename TLink::TToType>;
+    static const constexpr bool value = TSameBegin::value && TSameEnd::value;
+};
+
+/* forward declare */
+template<typename TMachine, typename TBegin, typename TEnd, typename TVisited, typename TLinks>
+struct ReachableImpl;
+
+/* implementation for following a link that should not be followed so this is a dead end */
+template<bool TFollow, typename TMachine, typename TBegin, typename TEnd, typename TVisited>
+struct FollowImpl
+{
+    static const constexpr bool value = false;
+};
+
+/* implementation for following a link that should be followed, returns true if reachable */
+template<typename TMachine, typename TBegin, typename TEnd, typename TVisited>
+struct FollowImpl<true, TMachine, TBegin, TEnd, TVisited>
+{
+    using TNewVisited = TypeListAddUnique<TVisited, TBegin>;
+    using TImpl = ReachableImpl<TMachine, TBegin, TEnd, TNewVisited, typename TMachine::TLinkList>;
+    static const constexpr bool value = TImpl::value;
+};
+
+/* reachable using this link or the next link or if the link can be followed, by following that link */
+template<typename TMachine, typename TBegin, typename TEnd, typename TVisited, typename TLinks>
+struct ReachableImpl
+{
+    using TLink = typename TLinks::TCurrentType;
+    using TMatch = Match<TBegin, TEnd, TLink>;
+    using TSameBegin = typename TMatch::TSameBegin;
+    using TNewTo = typename TLink::TToType;
+    using TInVisited = TypeListContains<TVisited, typename TLink::TToType>;
+    static const constexpr bool follow = TSameBegin::value && !TInVisited::value;
+    using TUsingNext = FollowImpl<follow, TMachine, TNewTo, TEnd, TVisited>;
+    static const constexpr bool value = TMatch::value ||
+        ReachableImpl<TMachine, TBegin, TEnd, TVisited, typename TLinks::TNextType>::value ||
+        TUsingNext::value;
+};
+
+/* reachable for end of link list: not reachable */
+template<typename TMachine, typename TBegin, typename TEnd, typename TVisited>
+struct ReachableImpl<TMachine, TBegin, TEnd, TVisited, TypeListEnd>
+{
+    static const constexpr bool value = false;
+};
+
+/* value is whether TEnd is reachable from TBegin using TMachine */
+template<typename TMachine, typename TBegin, typename TEnd>
+struct Reachable
+{
+    using TVisited = TypeList<TBegin>;
+    using TImpl = ReachableImpl<TMachine, TBegin, TEnd, TVisited, typename TMachine::TLinkList>;
+    static const constexpr bool value = TImpl::value;
+};
+
 /* represents a process.  Process traverses the links of TMachine from TBegin to TEnd, operating on the TData given.
  Create the object with a reference to the data.  This will be operated on during its use.  Then run the process by
  calling start and repeatedly calling next and checking done.  Return value of next will indicate if a relevant event is
@@ -46,7 +113,9 @@ public:
     static_assert(TypeListContains<typename TMachine::TFromStateTypes, TBegin>::value, "");
     /* asserts that the end state is in the to states */
     static_assert(TypeListContains<typename TMachine::TToStateTypes, TEnd>::value, "");
-
+    /* make sure the end is reachable from the begin */
+    static_assert(Reachable<TMachine, TBegin, TEnd>::value, "End not reachable from Begin");
+    
 public:
     /* sets the process to no-state, equivalent to newly constructed */
     void reset() { state_.clear(); }
