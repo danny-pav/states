@@ -16,7 +16,7 @@ namespace states
  1. a state num which can be any of the from or to states
  2. an event num which can be any of the event states
  3. handle an event which finds the link that has the same from state and the same event and follows it
- 4. process a state which means to run the state's operation 
+ 4. process a state which means to run the state's operation
  */
 template<typename... TLinks>
 class Machine
@@ -70,8 +70,7 @@ private:
     template<typename TData, typename TFirst, typename... TOthers>
     static bool handleImpl(TStateNum& state, const TEventNum& event, TData& data)
     {
-        typedef typename TFirst::TEventType TFirstEvent;
-        if (event.template is<TFirstEvent>() && TFirst::relevant(state))
+        if (TFirst::relevant(state, event))
         {
             TFirst::follow(state, data);
             return true;
@@ -86,16 +85,21 @@ private:
         return false;
     }
 
-    /* link case for process, if the link is relevant, process else try the other links */
+    /* invokes the operation on the data for the state and returns true (always) for success */
+    template<typename TData, typename TState>
+    static bool invokeImpl(TData& data)
+    {
+        TState::invoke(data);
+        return true;
+    }
+
+    /* link case for process, if the link has the same statrt state, process else try the other links */
     template<typename TData, typename TFirst, typename... TOthers>
     static bool processImpl(const TStateNum& state, TData& data)
     {
-        if (TFirst::relevant(state))
-        {
-            TFirst::TFromType::invoke(data);
-            return true;
-        }
-        return processImpl<TData, TOthers...>(state, data);
+        typedef typename TFirst::TFromType TState;
+        return state.template is<TState>() ? invokeImpl<TData, TState>(data)
+                                           : processImpl<TData, TOthers...>(state, data);
     }
 
     /* base case for process, do nothing */
