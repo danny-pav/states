@@ -2,91 +2,120 @@
 
 Use this library to create state machines with very little runtime overhead.
 
-To create a state machine:
+##To create a state machine:
 1. Determine the data to be passed around the state machine.  This might be a new struct.  Or it might be the owning class of the state machine.  
 Either way, it will be passed around as a reference.
 
 ex:
+'''
 struct Data
 {
     int num_tries_;
     double value_;
 };
+'''
 
 2. Create some states:
-a. Create some names:
+    - Create some names:
 ex:
+'''
 static const char sBegin[] = "Begin";
 static const char sProcessor[] = "Processor";
 static const char sChecker[] = "Checker";
 static const char sEnd[] = "End";
+'''
 
-b. Create some states:
+    - Create some states:
 ex:
+'''
 typedef states::State<sBegin> Begin;
 typedef states::State<sProcessor> Processor;
 typedef states::State<sChecker> Checker;
 typedef states::State<sEnd> End;
+'''
 
-c. If operations are required to occur when arriving at a state or using dispatch (see below), create some operations:
+    - If operations are required to occur when arriving at a state or using dispatch (see below), create some operations:
 ex:
+'''
 struct Reset
 {
 void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
 };
+'''
 
-d. Attach the operations to the states when defining them as typedefs:
+    - Attach the operations to the states when defining them as typedefs:
 ex:
 instead of:
+'''
 typedef states::State<sBegin> Begin;
+'''
 do:
+'''
 typedef states::State<sBegin, Reset> Begin;
+'''
 
 2.Create some events:
-a. Create some names:
+    - Create some names:
 ex:
+'''
 static const char eStart[] = "Start";
 static const char eCheck[] = "Check";
 static const char eCheckFailed[] = "Check Failed";
 static const char eCheckPassed[] = "Check Passed";
+'''
 
-b. Create some events:
+    - Create some events:
 ex:
+'''
 typedef states::Event<eStart> Start;
 typedef states::Event<eCheck> Check;
 typedef states::Event<eCheckFailed> CheckFailed;
 typedef states::Event<eCheckWorked> CheckWorked;
+'''
 
 3. Create some links.  Links are the transitions from state to state that occur due to an event.
-a. Create some links:
+    - Create some links:
+ex:
+'''
 typedef states::Link<Begin, Start, Processor> Link1;
 typedef states::Link<Processor, Check, Checker> Link2;
 typedef states::Link<Checker, CheckFailed, Processor> Link3;
 typedef states::Link<Checker, CheckPassed, End> Link4;
+'''
 
-b. If operations are required to occur when traversing a link, create some operations:
+If operations are required to occur when traversing a link, create some operations:
 ex:
+'''
 struct Reset
 {
 void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
 };
+'''
 
-c. Attach the operations to the states when defining them as typedefs:
+    - Attach the operations to the states when defining them as typedefs:
 ex:
 instead of:
+'''
 typedef states::Link<Checker, CheckFailed, Processor> Link3;
+'''
 do:
+'''
 typedef states::Link<Checker, CheckFailed, Processor, Reset> Link3;
+'''
 
 4. Create a machine using the set of links
-a. create the machine:
+    - create the machine:
 ex:
+'''
 typedef states::Machine<Link1, Link2, Link3, Link4> MachineType;
+'''
 
 5. Create a process to use the machine:
-a. Create the process using:
+    - Create the process using:
 ex:
+'''
 typedef states::Process<Start, End, MachineType, Data> ProcessType;
+'''
 
 b. Traverse through the process by creating an instance and using its functions:
 ex:
@@ -125,16 +154,18 @@ FAQ:
 5. Using a paramterized next is inconvenient because the next state indicator can't be saved in a variable.  What can be done?
     Use Process<>::TEventNum to be the event to be pushed to next:
     
+    '''
     Data d;
     ProcessType p(d);
     p.start();
     p.next<Start>(); //line 4
-    
+    '''
     replace line 4 with:
+    '''
     ProcessType::TEventNum event;
     event.set<Start>();
     p.next(event);
-    
+    '''
     Variable event can be stored.
     
 6. How can dispatch be performed?  Based on the current state, the state operation should be performed.
