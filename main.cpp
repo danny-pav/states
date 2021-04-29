@@ -13,6 +13,7 @@
 #include "process.hpp"
 #include "state.hpp"
 #include "typenum.hpp"
+#include "umlvisitor.hpp"
 
 #include <iostream>
 
@@ -141,5 +142,9 @@ int main(int argc, const char* argv[])
     testPass2("32");
     testPass2("101.57");
     testPass2("32,000"); // SHOULD BE ERROR
+    
+    // dump the plant uml of the parser
+    states::UmlVisitor v(std::cout);
+    Parser::visit(v);
     return 0;
 }
