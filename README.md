@@ -100,7 +100,11 @@ assert(p.done());
     -   Compile time checks have been added for Process (see #1 above) and for checking that the set of Links do not have multiple links with the same TBegin and TEvent.  Also, the StateNum and EventNum will not compile if using States or Events that are not in the list for the set and is functions.
     
 4. How can the state machine be dumped?
-    -   The name parameter for the state and event will be used in a future revision which will include this feature.  An issue has been raised.
+    -   Use the UmlVisitor class and visit the process.
+    ```
+    states::UmlVisitor v(std::cout);
+    ProcessType::visit(v);
+    ```
     
 5. Using a paramterized next is inconvenient because the next state indicator can't be saved in a variable.  What can be done?
     -   Use Process<>::TEventNum to be the event to be pushed to next.  Also the event can be stored.

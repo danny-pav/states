@@ -150,6 +150,17 @@ public:
     /* returns true if at the TEnd state, equivalent to at<TEnd>() */
     bool done() const { return state_.template is<TEnd>(); }
 
+    /* visits the process by visiting its machine and its begin and end states */
+    template<typename TVisitor>
+    static void visit(TVisitor& visitor)
+    {
+        visitor.preProcess();
+        visitor.visitBegin(TBegin::name());
+        TMachine::visit(visitor);
+        visitor.visitEnd(TEnd::name());
+        visitor.postProcess();
+    }
+
 private:
     /* the current state, may be invalid if reset */
     TStateNum state_;

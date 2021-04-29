@@ -109,6 +109,20 @@ private:
         return false;
     }
 
+    /* visits the static structure of the machine, by visiting the first link and then each subsequent link */
+    template<typename TVisitor, typename TFirst, typename... TOthers>
+    static void visitImpl(TVisitor& visitor)
+    {
+        TFirst::visit(visitor);
+        visitImpl<TVisitor, TOthers...>(visitor);
+    }
+
+    /* visits the static structure of the machine */
+    template<typename TVisitor>
+    static void visitImpl(TVisitor& visitor)
+    {
+    }
+
 public:
     /* handle an event, will change the state, following the appropriate link, performing the link op and the new state
        op returns true if handled */
@@ -134,6 +148,13 @@ public:
     static bool process(const TStateNum& state, TData& data)
     {
         return processImpl<TData, TLinks...>(state, data);
+    }
+
+    /* visit the machine by visiting its links */
+    template<typename TVisitor>
+    static void visit(TVisitor& visitor)
+    {
+        visitImpl<TVisitor, TLinks...>(visitor);
     }
 };
 

@@ -41,6 +41,13 @@ public:
         state.template set<TThisType>();
         invoke(data);
     }
+
+    /* visit the state using its name */
+    template<typename TVisitor>
+    static void visit(TVisitor& visitor)
+    {
+        visitor.visitState(name());
+    }
 };
 
 } // namespace states

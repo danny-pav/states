@@ -61,6 +61,19 @@ public:
         TLinkOp()(data);
         TTo::become(state, data);
     }
+
+    /* visit the link by visiting the start and end state and then the event */
+    template<typename TVisitor>
+    static void visit(TVisitor& visitor)
+    {
+        visitor.preLink();
+        TFrom::visit(visitor);
+        visitor.inLink1();
+        TTo::visit(visitor);
+        visitor.inLink2();
+        TEvent::visit(visitor);
+        visitor.postLink();
+    }
 };
 
 } // namespace states

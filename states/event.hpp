@@ -24,5 +24,12 @@ private:
 public:
     /* returns the name */
     static const char* name() { return TNameImpl::name(); }
+
+    /* visit the event by using its name */
+    template<typename TVisitor>
+    static void visit(TVisitor& visitor)
+    {
+        visitor.visitEvent(name());
+    }
 };
 } // namespace states
