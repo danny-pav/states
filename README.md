@@ -105,6 +105,21 @@ assert(p.done());
     states::UmlVisitor v(std::cout);
     ProcessType::visit(v);
     ```
+    This produces output like this:
+    ```
+    @startuml
+    [*] -> Start
+    Start -> Digit1 : Digit
+    Digit1 -> Digit1 : Digit
+    Digit1 -> Decimal : Dot
+    Digit1 -> End : Done
+    Decimal -> Digit2 : Digit
+    Decimal -> End : Done
+    Digit2 -> Digit2 : Digit
+    Digit2 -> End : Done
+    End -> terminate
+    @enduml
+    ```
     
 5. Using a paramterized next is inconvenient because the next state indicator can't be saved in a variable.  What can be done?
     -   Use Process<>::TEventNum to be the event to be pushed to next.  Also the event can be stored.
