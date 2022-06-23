@@ -23,25 +23,25 @@ class Machine
 {
 public:
     /* list of links */
-    typedef TypeList<TLinks...> TLinkList;
+    using TLinkList = TypeList<TLinks...>;
     /* list of unique states that are start states */
-    typedef TypeListUnique<typename TLinks::TFromType...> TFromStateTypes;
+    using TFromStateTypes = TypeListUnique<typename TLinks::TFromType...>;
     /* list of unique states that are end states */
-    typedef TypeListUnique<typename TLinks::TToType...> TToStateTypes;
+    using TToStateTypes = TypeListUnique<typename TLinks::TToType...>;
     /* list of unique states that are start or end states */
-    typedef TypeListUnique<typename TLinks::TFromType..., typename TLinks::TToType...> TStateTypes;
+    using TStateTypes = TypeListUnique<typename TLinks::TFromType..., typename TLinks::TToType...>;
     /* typenum representing a state from the list of unique states */
-    typedef TypeNum<TStateTypes> TStateNum;
+    using TStateNum = TypeNum<TStateTypes>;
     /* list of unique events */
-    typedef TypeListUnique<typename TLinks::TEventType...> TEventTypes;
+    using TEventTypes = TypeListUnique<typename TLinks::TEventType...>;
     /* typenum representing an event from the list of unique events */
-    typedef TypeNum<TEventTypes> TEventNum;
+    using TEventNum = TypeNum<TEventTypes>;
 
 private:
     /* non-unique list of key types */
-    typedef TypeList<typename TLinks::TKeyType...> TKeyTypes;
+    using TKeyTypes = TypeList<typename TLinks::TKeyType...>;
     /* unique list of key types */
-    typedef TypeListUnique<typename TLinks::TKeyType...> TUniqueKeyTypes;
+    using TUniqueKeyTypes = TypeListUnique<typename TLinks::TKeyType...>;
     /* asserts that the list of links does not have any duplicate start, event pairs */
     static_assert(TypeListSize<TKeyTypes>::size == TypeListSize<TUniqueKeyTypes>::size,
                   "set of links must have unique set of from/event pairs.");
@@ -97,7 +97,7 @@ private:
     template<typename TData, typename TFirst, typename... TOthers>
     static bool processImpl(const TStateNum& state, TData& data)
     {
-        typedef typename TFirst::TFromType TState;
+        using TState = typename TFirst::TFromType;
         return state.template is<TState>() ? invokeImpl<TData, TState>(data)
                                            : processImpl<TData, TOthers...>(state, data);
     }

@@ -106,9 +106,9 @@ private:
 
 public:
     /* the state num type using the states form the machine given */
-    typedef typename TMachine::TStateNum TStateNum;
+    using TStateNum = typename TMachine::TStateNum;
     /* the event num type using the events from the machine given */
-    typedef typename TMachine::TEventNum TEventNum;
+    using TEventNum = typename TMachine::TEventNum;
     /* asserts that the begin state is in the from states */
     static_assert(TypeListContains<typename TMachine::TFromStateTypes, TBegin>::value, "");
     /* asserts that the end state is in the to states */
