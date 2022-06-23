@@ -28,13 +28,13 @@ class Link
 {
 public:
     /* from type */
-    typedef TFrom TFromType;
+    using TFromType = TFrom;
     /* event type */
-    typedef TEvent TEventType;
+    using TEventType = TEvent;
     /* to type */
-    typedef TTo TToType;
+    using TToType = TTo;
     /* key is From, Event pair */
-    typedef LinkKey<TFrom, TEvent> TKeyType;
+    using TKeyType = LinkKey<TFrom, TEvent>;
 
 public:
     /* returns true if this link is relevant to this state and the event,

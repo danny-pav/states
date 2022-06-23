@@ -44,28 +44,28 @@ struct Consume
     }
 };
 
-typedef states::State<sStart> Start;
-typedef states::State<sDigit1, Consume> Digit1;
-typedef states::State<sDecimal, Consume> Decimal;
-typedef states::State<sDigit2, Consume> Digit2;
-typedef states::State<sEnd> End;
+using Start = states::State<sStart>;
+using Digit1 = states::State<sDigit1, Consume>;
+using Decimal = states::State<sDecimal, Consume>;
+using Digit2 = states::State<sDigit2, Consume>;
+using End = states::State<sEnd>;
 
-typedef states::Event<eDigit> Digit;
-typedef states::Event<eDot> Dot;
-typedef states::Event<eDone> Done;
+using Digit = states::Event<eDigit>;
+using Dot = states::Event<eDot>;
+using Done = states::Event<eDone>;
 
-typedef states::Link<Start, Digit, Digit1> L1;
-typedef states::Link<Digit1, Digit, Digit1> L2;
-typedef states::Link<Digit1, Dot, Decimal> L3;
-typedef states::Link<Digit1, Done, End> L4;
-typedef states::Link<Decimal, Digit, Digit2> L5;
-typedef states::Link<Decimal, Done, End> L6;
-typedef states::Link<Digit2, Digit, Digit2> L7;
-typedef states::Link<Digit2, Done, End> L8;
+using L1 = states::Link<Start, Digit, Digit1>;
+using L2 = states::Link<Digit1, Digit, Digit1>;
+using L3 = states::Link<Digit1, Dot, Decimal>;
+using L4 = states::Link<Digit1, Done, End>;
+using L5 = states::Link<Decimal, Digit, Digit2>;
+using L6 = states::Link<Decimal, Done, End>;
+using L7 = states::Link<Digit2, Digit, Digit2>;
+using L8 = states::Link<Digit2, Done, End>;
 
-typedef states::Machine<L1, L2, L3, L4, L5, L6, L7, L8> SM;
+using SM = states::Machine<L1, L2, L3, L4, L5, L6, L7, L8>;
 
-typedef states::Process<SM, Start, End, Data> Parser;
+using Parser = states::Process<SM, Start, End, Data>;
 
 bool processEvent(Parser& p, Data& d)
 {

@@ -19,9 +19,9 @@ class State
 {
 private:
     /* this type */
-    typedef State<TName, TStateOp> TThisType;
+    using TThisType = State<TName, TStateOp>;
     /* the implementation of the name */
-    typedef Named<TName> TNameImpl;
+    using TNameImpl = Named<TName>;
 
 public:
     /* returns the name of the state (as given by template paramter) */

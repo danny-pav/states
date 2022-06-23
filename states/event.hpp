@@ -19,7 +19,7 @@ class Event
 {
 private:
     /* the implementation of the name */
-    typedef Named<Name> TNameImpl;
+    using TNameImpl = Named<Name>;
 
 public:
     /* returns the name */
