@@ -18,7 +18,7 @@ namespace states
 template<typename TMachine, typename TBegin, typename TEnd>
 struct Reachable;
 
-/* dteremines if the link goes from begin to end.  if so, value is true */
+/* determines if the link goes from begin to end.  if so, value is true */
 template<typename TBegin, typename TEnd, typename TLink>
 struct Match
 {
