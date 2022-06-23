@@ -57,7 +57,7 @@ struct TypeListIndexBase
 // TypeListIndex
 //
 
-/* recursive definition of TypeListIndex returning the 0-based index of the type T in the type list TLIST */
+/* recursive definition of TypeListIndex returning the 0-based index of the type T in the type list TList */
 template<typename TList, typename T>
 struct TypeListIndex;
 

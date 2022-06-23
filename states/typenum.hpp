@@ -39,7 +39,9 @@ public:
     }
     /* returns TRUE if the value is not INVALID, the type can be found in the class's Ts template parameter */
     bool valid() const { return (index_ != npos); }
-
+    /* returns the index value */
+    size_t get() const { return index_; }
+    
 public:
     /* sets the value to INVALID */
     void clear() { index_ = npos; }
@@ -49,6 +51,14 @@ public:
     typename std::enable_if<TypeListContains<TList, T>::value, void>::type set()
     {
         index_ = TypeListIndex<TList, T>::index;
+    }
+    /* sets the index */
+    bool set(size_t index)
+    {
+        const bool ok = (index == npos) || ((0 <= index) && (index < TypeListSize<TList>::size));
+        if (ok)
+            index_ = index;
+        return ok;
     }
 
 public:
