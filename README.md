@@ -21,10 +21,10 @@ static const char sEnd[] = "End";
 ```
 3.  Create some states:
 ```
-typedef states::State<sBegin> Begin;
-typedef states::State<sProcessor> Processor;
-typedef states::State<sChecker> Checker;
-typedef states::State<sEnd> End;
+using Begin = states::State<sBegin>;
+using Processor = states::State<sProcessor>;
+using Checker = states::State<sChecker>;
+using End = states::State<sEnd>;
 ```
 4.  If operations are required to occur when arriving at a state or using dispatch (see below), create some operations:
 ```
@@ -33,9 +33,9 @@ struct Reset
     void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
 };
 ```
-5.  Attach the operations to the states when defining them as typedefs.
+5.  Attach the operations to the states when defining them with using or as typedefs.
 ```
-typedef states::State<sBegin, Reset> Begin;
+using Begin = states::State<sBegin, Reset>;
 ```
 6.  Create some event names:
 ```
@@ -46,17 +46,17 @@ static const char eCheckPassed[] = "Check Passed";
 ```
 7.  Create some events:
 ```
-typedef states::Event<eStart> Start;
-typedef states::Event<eCheck> Check;
-typedef states::Event<eCheckFailed> CheckFailed;
-typedef states::Event<eCheckWorked> CheckWorked;
+using Start = states::Event<eStart>;
+using Check = states::Event<eCheck>;
+using CheckFailed = states::Event<eCheckFailed>;
+using CheckWorked = states::Event<eCheckWorked>;
 ```
 8.  Create some links.  Links are the transitions from state to state that occur due to an event.
 ```
-typedef states::Link<Begin, Start, Processor> Link1;
-typedef states::Link<Processor, Check, Checker> Link2;
-typedef states::Link<Checker, CheckFailed, Processor> Link3;
-typedef states::Link<Checker, CheckPassed, End> Link4;
+using Link1 = states::Link<Begin, Start, Processor>;
+using Link2 = states::Link<Processor, Check, Checker>;
+using Link3 = states::Link<Checker, CheckFailed, Processor>;
+using Link4 = states::Link<Checker, CheckPassed, End>;
 ```
 9.  If operations are required to occur when traversing a link, create some operations:
 ```
@@ -65,17 +65,17 @@ struct Reset
     void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
 };
 ```
-10. Attach the operations to the states when defining them as typedefs:
+10. Attach the operations to the states when defining them with using or as typedefs:
 ```
-typedef states::Link<Checker, CheckFailed, Processor, Reset> Link3;
+using Link3 = states::Link<Checker, CheckFailed, Processor, Reset>;
 ```
 11. Create a machine using the set of links:
 ```
-typedef states::Machine<Link1, Link2, Link3, Link4> MachineType;
+using MachineType = states::Machine<Link1, Link2, Link3, Link4>;
 ```
 12. Create a process to use the machine:
 ```
-typedef states::Process<Start, End, MachineType, Data> ProcessType;
+using ProcessType = states::Process<Start, End, MachineType, Data>;
 ```
 13. Traverse through the process by creating an instance and using its functions:
 ```
