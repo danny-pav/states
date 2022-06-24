@@ -85,6 +85,31 @@ struct TypeListIndex
 };
 
 //
+// TypeListAt
+//
+
+template <typename T, typename TList, size_t N>
+struct TypeListAtImpl
+{
+    using TPrevImpl = TypeListAtImpl<typename TList::TCurrentType, typename TList::TNextType, N - 1>;
+    using TType = typename TPrevImpl::TType;
+};
+
+template <typename T, typename TList>
+struct TypeListAtImpl<T, TList, 0>
+{
+    using TType = T;
+};
+
+/* the type at the 0 based index N of the type list TList */
+template <typename TList, size_t N>
+struct TypeListAt
+{
+    using TImpl = TypeListAtImpl<typename TList::TCurrentType, typename TList::TNextType, N>;
+    using TType = typename TImpl::TType;
+};
+
+//
 // TypeListContains
 //
 

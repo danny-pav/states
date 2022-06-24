@@ -3,7 +3,22 @@
 ## Use this library to create state machines with very little runtime overhead.
 
 To create a state machine:
-1.  Determine the data to be passed around the state machine.  This might be a new struct.  Or it might be the owning class of the state machine.  Either way, it will be passed around as a reference.
+1.  Create some event names:
+```
+static const char eStart[] = "Start";
+static const char eCheck[] = "Check";
+static const char eCheckFailed[] = "Check Failed";
+static const char eCheckPassed[] = "Check Passed";
+```
+2.  Create some events:
+```
+using Start = states::Event<eStart>;
+using Check = states::Event<eCheck>;
+using CheckFailed = states::Event<eCheckFailed>;
+using CheckWorked = states::Event<eCheckWorked>;
+using NextEvent = states::NextEvent<Start, Check, CheckFailed, CheckWorked>;
+```
+3.  Determine the data to be passed around the state machine.  This might be a new struct.  Or it might be the owning class of the state machine.  Either way, it will be passed around as a reference.  If the state handlers will be setting the next event, add a NextEvent::Index as a data member to the Data that will be passed around.
 ```
 struct Data
 {
@@ -11,73 +26,50 @@ struct Data
     double value_;
 };
 ```
-
-2.  Create some state names:
+4.  Create some state names:
 ```
 static const char sBegin[] = "Begin";
 static const char sProcessor[] = "Processor";
 static const char sChecker[] = "Checker";
 static const char sEnd[] = "End";
 ```
-3.  Create some states:
+5.  If operations are required to occur when arriving at a state or using dispatch (see below), create some operations:
 ```
-using Begin = states::State<sBegin>;
+struct Reset
+{
+    void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
+};
+```
+6.  Create some states. Attach the operations to the states when defining them with using or as typedefs:
+```
+using Begin = states::State<sBegin, Reset>;
 using Processor = states::State<sProcessor>;
 using Checker = states::State<sChecker>;
 using End = states::State<sEnd>;
 ```
-4.  If operations are required to occur when arriving at a state or using dispatch (see below), create some operations:
+7.  If operations are required to occur when traversing a link, create some operations:
 ```
 struct Reset
 {
     void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
 };
 ```
-5.  Attach the operations to the states when defining them with using or as typedefs.
-```
-using Begin = states::State<sBegin, Reset>;
-```
-6.  Create some event names:
-```
-static const char eStart[] = "Start";
-static const char eCheck[] = "Check";
-static const char eCheckFailed[] = "Check Failed";
-static const char eCheckPassed[] = "Check Passed";
-```
-7.  Create some events:
-```
-using Start = states::Event<eStart>;
-using Check = states::Event<eCheck>;
-using CheckFailed = states::Event<eCheckFailed>;
-using CheckWorked = states::Event<eCheckWorked>;
-```
-8.  Create some links.  Links are the transitions from state to state that occur due to an event.
+8.  Create some links.  Links are the transitions from state to state that occur due to an event. Attach the operations to the states when defining them with using or as typedefs:
 ```
 using Link1 = states::Link<Begin, Start, Processor>;
 using Link2 = states::Link<Processor, Check, Checker>;
-using Link3 = states::Link<Checker, CheckFailed, Processor>;
+using Link3 = states::Link<Checker, CheckFailed, Processor, Reset>;
 using Link4 = states::Link<Checker, CheckPassed, End>;
 ```
-9.  If operations are required to occur when traversing a link, create some operations:
-```
-struct Reset
-{
-    void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
-};
-```
-10. Attach the operations to the states when defining them with using or as typedefs:
-```
-using Link3 = states::Link<Checker, CheckFailed, Processor, Reset>;
-```
-11. Create a machine using the set of links:
+9. Create a machine using the set of links:
 ```
 using MachineType = states::Machine<Link1, Link2, Link3, Link4>;
 ```
-12. Create a process to use the machine:
+10. Create a process to use the machine:
 ```
 using ProcessType = states::Process<Start, End, MachineType, Data>;
 ```
-13. Traverse through the process by creating an instance and using its functions:
+11. Traverse through the process by creating an instance and using its functions:
 ```
 Data d;
 ProcessType p(d);
@@ -121,8 +113,8 @@ assert(p.done());
     @enduml
     ```
     
-5. Using a paramterized next is inconvenient because the next state indicator can't be saved in a variable.  What can be done?
-    -   Use Process<>::TEventNum to be the event to be pushed to next.  Also the event can be stored.
+5. Using a parameterized next is inconvenient because the next state indicator can't be saved in a variable.  What can be done?
+    -   Use Process<>::TEventNum to be the event to be pushed to next.  Also the event can be stored.  Additionally, you can use NextEvent to turn the event into a simple integral value that can be stored as part of the data in the token passed around.  NextEvent also allows you to use it to advance the process.  NextEvent helps in that it does not need knowledge of the entire process (when the data token is defined) for it to be included within the data token. 
     ```
     ProcessType::TEventNum event;
     event.set<Start>();

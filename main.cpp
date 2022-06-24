@@ -17,16 +17,17 @@
 
 #include <iostream>
 
-static const char sStart[] = "Start";
-static const char sDigit1[] = "Digit1";
-static const char sDecimal[] = "Decimal";
-static const char sDigit2[] = "Digit2";
-static const char sEnd[] = "End";
-
+// 1.  Create some event names:
 static const char eDigit[] = "Digit";
 static const char eDot[] = "Dot";
 static const char eDone[] = "Done";
 
+// 2.  Create some events:
+using Digit = states::Event<eDigit>;
+using Dot = states::Event<eDot>;
+using Done = states::Event<eDone>;
+
+// 3.  Determine the data to be passed around the state machine
 struct Data
 {
     const std::string in_;
@@ -34,6 +35,15 @@ struct Data
     std::string out_{};
 };
 
+
+// 4.  Create some state names:
+static const char sStart[] = "Start";
+static const char sDigit1[] = "Digit1";
+static const char sDecimal[] = "Decimal";
+static const char sDigit2[] = "Digit2";
+static const char sEnd[] = "End";
+
+// 5. create some operations:
 struct Consume
 {
     void operator()(Data& d)
@@ -44,16 +54,14 @@ struct Consume
     }
 };
 
+// 6. Create some states.
 using Start = states::State<sStart>;
 using Digit1 = states::State<sDigit1, Consume>;
 using Decimal = states::State<sDecimal, Consume>;
 using Digit2 = states::State<sDigit2, Consume>;
 using End = states::State<sEnd>;
 
-using Digit = states::Event<eDigit>;
-using Dot = states::Event<eDot>;
-using Done = states::Event<eDone>;
-
+// 8. Create some links.
 using L1 = states::Link<Start, Digit, Digit1>;
 using L2 = states::Link<Digit1, Digit, Digit1>;
 using L3 = states::Link<Digit1, Dot, Decimal>;
@@ -63,8 +71,10 @@ using L6 = states::Link<Decimal, Done, End>;
 using L7 = states::Link<Digit2, Digit, Digit2>;
 using L8 = states::Link<Digit2, Done, End>;
 
+// 9. Create a machine using the set of links
 using SM = states::Machine<L1, L2, L3, L4, L5, L6, L7, L8>;
 
+// 10. Create a process to use the machine
 using Parser = states::Process<SM, Start, End, Data>;
 
 bool processEvent(Parser& p, Data& d)
@@ -99,6 +109,7 @@ void testPass1(const std::string& s)
 {
     std::cout << ">>>>" << std::endl;
     std::cout << "in:" << s << std::endl;
+    // 11. Traverse through the process
     Data d{s};
     Parser p(d);
     p.start();
@@ -118,6 +129,7 @@ void testPass2(const std::string& s)
 {
     std::cout << ">>>>" << std::endl;
     std::cout << "in:" << s << std::endl;
+    // 11. Traverse through the process
     Data d{s};
     Parser p(d);
     p.start();
