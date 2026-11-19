@@ -16,6 +16,6 @@ class Named
 {
 public:
     /* returns the name that is the template parameter */
-    static const char* name() { return Name; }
+    static constexpr const char* name() { return Name; }
 };
 } // namespace states

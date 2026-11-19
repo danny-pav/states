@@ -40,7 +40,7 @@ public:
     /* returns true if this link is relevant to this state and the event,
      by which the state is the starting state for the link and the event matches */
     template<typename TStateNum, typename TEventNum>
-    static bool relevant(const TStateNum& state, const TEventNum& event)
+    static constexpr bool relevant(const TStateNum& state, const TEventNum& event)
     {
         return event.template is<TEvent>() && state.template is<TFrom>();
     }
@@ -48,7 +48,7 @@ public:
     /* returns true if this link is relevant to this state and the event,
      by which the state is the starting state for the link and the event matches */
     template<typename TTestEvent, typename TStateNum>
-    static bool relevant(const TStateNum& state)
+    static constexpr bool relevant(const TStateNum& state)
     {
         return std::is_same<TEvent, TTestEvent>::value && state.template is<TFrom>();
     }

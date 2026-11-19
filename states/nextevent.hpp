@@ -6,8 +6,7 @@
 //  Copyright © 2022 Daniel Pav. All rights reserved.
 //
 
-#ifndef nextevent_hpp
-#define nextevent_hpp
+#pragma once
 
 #include "typelist.hpp"
 
@@ -50,12 +49,12 @@ private:
     }
 
 public:
-    static Index none()
+    static constexpr Index none()
     {
         return npos;
     }
     template <typename TEvent>
-    static typename std::enable_if<TypeListContains<TEventList, TEvent>::value, Index>::type store()
+    static constexpr typename std::enable_if<TypeListContains<TEventList, TEvent>::value, Index>::type store()
     {
         return TypeListIndex<TEventList, TEvent>::index;
     }
@@ -65,6 +64,4 @@ public:
         return (index != npos) ? applyIndex<TProcess, 0>(process, index) : false;
     }
 };
-}
-
-#endif /* nextevent_hpp */
+} //namespace states

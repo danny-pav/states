@@ -33,14 +33,14 @@ public:
     /* returns TRUE if the value corresponds to the type T of the Ts template parameter
      code will not compile if T is not in Ts */
     template<typename T>
-    typename std::enable_if<TypeListContains<TList, T>::value, bool>::type is() const
+    constexpr typename std::enable_if<TypeListContains<TList, T>::value, bool>::type is() const
     {
         return index_ == TypeListIndex<TList, T>::index;
     }
     /* returns TRUE if the value is not INVALID, the type can be found in the class's Ts template parameter */
-    bool valid() const { return (index_ != npos); }
+    constexpr bool valid() const { return (index_ != npos); }
     /* returns the index value */
-    size_t get() const { return index_; }
+    constexpr size_t get() const { return index_; }
     
 public:
     /* sets the value to INVALID */

@@ -139,7 +139,7 @@ public:
 
     /* returns true if at the state specified */
     template<typename TState>
-    bool at() const
+    constexpr bool at() const
     {
         return state_.template is<TState>();
     }
@@ -148,7 +148,7 @@ public:
     bool invoke() { return state_.valid() ? TMachine::process(state_, data_) : false; }
 
     /* returns true if at the TEnd state, equivalent to at<TEnd>() */
-    bool done() const { return state_.template is<TEnd>(); }
+    constexpr bool done() const { return state_.template is<TEnd>(); }
 
     /* visits the process by visiting its machine and its begin and end states */
     template<typename TVisitor>

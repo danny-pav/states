@@ -25,7 +25,7 @@ private:
 
 public:
     /* returns the name of the state (as given by template paramter) */
-    static const char* name() { return TNameImpl::name(); }
+    static constexpr const char* name() { return TNameImpl::name(); }
 
     /* runs the state operation on the data provided */
     template<typename TData>
