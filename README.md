@@ -10,12 +10,13 @@ static const char eCheck[] = "Check";
 static const char eCheckFailed[] = "Check Failed";
 static const char eCheckPassed[] = "Check Passed";
 ```
-2.  Create some events:
+2.  Create some events and then put all of the events in a sequence:
 ```
 using Start = states::Event<eStart>;
 using Check = states::Event<eCheck>;
 using CheckFailed = states::Event<eCheckFailed>;
 using CheckWorked = states::Event<eCheckWorked>;
+// all events in a sequence allows them to have an index associated with them (0 for the 1st, 1 for the 2nd, etc)
 using NextEvent = states::NextEvent<Start, Check, CheckFailed, CheckWorked>;
 ```
 3.  Determine the data to be passed around the state machine.  This might be a new struct.  Or it might be the owning class of the state machine.  Either way, it will be passed around as a reference.  If the state handlers will be setting the next event, add a NextEvent::Index as a data member to the Data that will be passed around.
@@ -24,6 +25,7 @@ struct Data
 {
     int num_tries_;
     double value_;
+    bool _can_start;
 };
 ```
 4.  Create some state names:
@@ -37,43 +39,52 @@ static const char sEnd[] = "End";
 ```
 struct Reset
 {
-    void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
+    void operator()(Data& d) const { d.num_tries_ = 0; d.value_ = 0; }
 };
 ```
-6.  Create some states. Attach the operations to the states when defining them with using or as typedefs:
+6.  Create some states. Attach the operations (will default to NoOp if not given) to the states when defining them with using or as typedefs:
 ```
 using Begin = states::State<sBegin, Reset>;
 using Processor = states::State<sProcessor>;
 using Checker = states::State<sChecker>;
 using End = states::State<sEnd>;
 ```
-7.  If operations are required to occur when traversing a link, create some operations:
+7.  If validity checkes are required when attempting to traverse a link, create some operations:
+```
+struct CanStart
+{
+    bool operator()(const Data& d) const { return d._can_start; }
+}
+```
+8.  If operations are required to occur when traversing a link, create some operations:
 ```
 struct Reset
 {
-    void operator()(Data& d) { d.num_tries_ = 0; d.value_ = 0; }
+    void operator()(Data& d) const { d.num_tries_ = 0; d.value_ = 0; }
 };
 ```
-8.  Create some links.  Links are the transitions from state to state that occur due to an event. Attach the operations to the states when defining them with using or as typedefs:
+
+9.  Create some links.  Links are the transitions from state to state that occur due to an event. Attach the operations to the states when defining them with using or as typedefs:
 ```
-using Link1 = states::Link<Begin, Start, Processor>;
+using Link1 = states::Link<Begin, Start, Processor, NoOp, CanStart>;
 using Link2 = states::Link<Processor, Check, Checker>;
 using Link3 = states::Link<Checker, CheckFailed, Processor, Reset>;
 using Link4 = states::Link<Checker, CheckPassed, End>;
 ```
-9. Create a machine using the set of links:
+10. Create a machine using the set of links:
 ```
 using MachineType = states::Machine<Link1, Link2, Link3, Link4>;
 ```
-10. Create a process to use the machine:
+11. Create a process to use the machine:
 ```
 using ProcessType = states::Process<Start, End, MachineType, Data>;
 ```
-11. Traverse through the process by creating an instance and using its functions:
+12. Traverse through the process by creating an instance and using its functions:
 ```
 Data d;
 ProcessType p(d);
 p.start();
+d._can_start = true;
 p.next<Start>();
 assert(p.at<Processor>());
 p.next<Check>();
