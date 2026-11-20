@@ -46,7 +46,7 @@ static const char sEnd[] = "End";
 // 5. create some operations:
 struct Consume
 {
-    void operator()(Data& d)
+    void operator()(Data& d) const
     {
         char c = d.in_[d.npos_];
         ++d.npos_;
