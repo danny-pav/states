@@ -53,8 +53,7 @@ private:
     {
         if (TFirst::template relevant<TEvent>(state))
         {
-            TFirst::follow(state, data);
-            return true;
+            return TFirst::follow(state, data);
         }
         return handleImpl<TEvent, TData, TOthers...>(state, data);
     }
@@ -72,8 +71,7 @@ private:
     {
         if (TFirst::relevant(state, event))
         {
-            TFirst::follow(state, data);
-            return true;
+            return TFirst::follow(state, data);
         }
         return handleImpl<TData, TOthers...>(state, event, data);
     }
