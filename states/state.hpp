@@ -31,7 +31,8 @@ public:
     template<typename TData>
     static void invoke(TData& data)
     {
-        TStateOp()(data);
+        const TStateOp state_op;
+        state_op(data);
     }
 
     /* sets the state to this state and invokes the state operation on the data provided */
