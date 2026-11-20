@@ -14,8 +14,8 @@ namespace states
 struct NoOp
 {
     /* does nothing */
-    template<typename T>
-    void operator()(T&)
+    template<typename TData>
+    void operator() (TData&) const
     {
     }
 };
