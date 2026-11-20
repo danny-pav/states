@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "allvalid.hpp"
 #include "noop.hpp"
 #include "state.hpp"
 #include "typenum.hpp"
@@ -21,9 +22,9 @@ struct LinkKey
 };
 
 /* represents a transition in a state diagram.  indicates a link from TFrom to TTo when TEvent occurs.  When this is
- * traverse the TLinkOp is invoked.
+ * attempted to be traversed, TValidOp will be invoked.  If it passes, state will move and the TLinkOp is invoked.
  */
-template<typename TFrom, typename TEvent, typename TTo, typename TLinkOp = NoOp>
+template<typename TFrom, typename TEvent, typename TTo, typename TLinkOp = NoOp, typename TValidOp = AllValid>
 class Link
 {
 public:
@@ -54,12 +55,21 @@ public:
     }
 
     /* follow the link, by running the link operation on the data and the state operation on the data, changing the
-     state to the new state */
+     state to the new state 
+     returns true if successfully followed 
+    */
     template<typename TData, typename TStateNum>
-    static void follow(TStateNum& state, TData& data)
+    static bool follow(TStateNum& state, TData& data)
     {
-        TLinkOp()(data);
+        const TData& const_data = data;
+        const TValidOp valid_op;
+        const bool is_valid = valid_op(const_data);
+        if (!is_valid) 
+            return false;
+        const TLinkOp link_op;
+        link_op(data);
         TTo::become(state, data);
+        return true;
     }
 
     /* visit the link by visiting the start and end state and then the event */
